@@ -1,0 +1,9 @@
+C:\Users\Айрон\Documents\Visual Studio 2015\Projects\MizgirTotalizator\MizgirTotalizator\bin\Debug\MizgirTotalizator.exe.config
+C:\Users\Айрон\Documents\Visual Studio 2015\Projects\MizgirTotalizator\MizgirTotalizator\bin\Debug\MizgirTotalizator.exe
+C:\Users\Айрон\Documents\Visual Studio 2015\Projects\MizgirTotalizator\MizgirTotalizator\bin\Debug\MizgirTotalizator.pdb
+C:\Users\Айрон\Documents\Visual Studio 2015\Projects\MizgirTotalizator\MizgirTotalizator\obj\Debug\MizgirTotalizator.csprojResolveAssemblyReference.cache
+C:\Users\Айрон\Documents\Visual Studio 2015\Projects\MizgirTotalizator\MizgirTotalizator\obj\Debug\MizgirTotalizator.Form.resources
+C:\Users\Айрон\Documents\Visual Studio 2015\Projects\MizgirTotalizator\MizgirTotalizator\obj\Debug\MizgirTotalizator.Properties.Resources.resources
+C:\Users\Айрон\Documents\Visual Studio 2015\Projects\MizgirTotalizator\MizgirTotalizator\obj\Debug\MizgirTotalizator.csproj.GenerateResource.Cache
+C:\Users\Айрон\Documents\Visual Studio 2015\Projects\MizgirTotalizator\MizgirTotalizator\obj\Debug\MizgirTotalizator.exe
+C:\Users\Айрон\Documents\Visual Studio 2015\Projects\MizgirTotalizator\MizgirTotalizator\obj\Debug\MizgirTotalizator.pdb
