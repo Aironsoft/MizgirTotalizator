@@ -53,8 +53,9 @@
     <Compile Include="Form.Designer.cs">
       <DependentUpon>Form.cs</DependentUpon>
     </Compile>
-    <Compile Include="Gamer.cs" />
-    <Compile Include="Mizgir.cs" />
+    <Compile Include="Gambler.cs" />
+    <Compile Include="Bug.cs" />
+    <Compile Include="GameController.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Form.resx">

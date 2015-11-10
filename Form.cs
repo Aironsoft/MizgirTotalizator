@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace MizgirTotalizator
 {
-    struct CritValues
+    public struct CritValues
     {
         public double CritValue;
         public List<int> CritVars; 
@@ -24,10 +24,7 @@ namespace MizgirTotalizator
         }
 
 
-        bool IsRunning = false;
-        List<Gamer> Gamers = new List<Gamer>();//список игроков
-        List<Mizgir> Mizgirs = new List<Mizgir>();//список участников гонок
-        int betsCount = 0;
+        GameController GC;//класс управления игрой
 
 
         /// <summary>
@@ -35,30 +32,45 @@ namespace MizgirTotalizator
         /// </summary>
         private void Form_Load(object sender, EventArgs e)
         {
+            GC = new GameController(this);
+            GC.Initialize();
+        }
+
+
+        public void GCDataInitialize()
+        {
             //цикл создания игроков
-            for(int i=0; i<3; i++)
+            for (int i = 0; i < 3; i++)
             {
-                Gamer gamer = new Gamer(1 + i, "Участник"+(1+ i), 100);
-                Gamers.Add(gamer);
+                Gambler gamer = new Gambler(1 + i, "Участник" + (1 + i), 100);
+                gamer.putBet = PutBet;
+                gamer.getBet = GetBet;
+                GC.Gamers.Add(gamer);
             }
 
             //создание гонщиков
-            Mizgir mizgir;
-            mizgir = new Mizgir(1, picbMizgir1);
-            Mizgirs.Add(mizgir);
-            mizgir = new Mizgir(2, picbMizgir2);
-            Mizgirs.Add(mizgir);
-            mizgir = new Mizgir(3, picbMizgir3);
-            Mizgirs.Add(mizgir);
-            mizgir = new Mizgir(4, picbMizgir4);
-            Mizgirs.Add(mizgir);
+            Bug mizgir;
+            mizgir = new Bug(1, picbMizgir1);
+            GC.Mizgirs.Add(mizgir);
+            mizgir = new Bug(2, picbMizgir2);
+            GC.Mizgirs.Add(mizgir);
+            mizgir = new Bug(3, picbMizgir3);
+            GC.Mizgirs.Add(mizgir);
+            mizgir = new Bug(4, picbMizgir4);
+            GC.Mizgirs.Add(mizgir);
             for (int i = 0; i < 4; i++)
             {
-                Mizgirs[i].move = Move;
-                Mizgirs[i].toStart = ToStart;
+                GC.Mizgirs[i].move = Move;
             }
 
-            //combGamer.SelectedIndex = 0;
+            //сосданние массива строк результатов гонки
+            GC.ResultStrings = new string[GC.Gamers.Count];
+        }
+
+
+
+        public void FormInitialize()
+        {
             lbCash.Text = "";
             combMizgir.SelectedIndex = 0;
             btStart.Enabled = false;
@@ -67,30 +79,50 @@ namespace MizgirTotalizator
             label3.Text = "";
         }
 
-        public void ToStart(Mizgir mizgir)
+
+        public void ToStart()
         {
-            switch (mizgir.Number)
+            GC.betsCount = 0;
+            GC.sumBet = 0;
+            GC.winBet = 0;
+            for(int i=0; i<GC.Gamers.Count; i++)
             {
-                case 1:
-                    mizgirRoad1.Controls.Add(mizgir.Picture, 0, 0);
-                    mizgirRoad1.Refresh();
-                    break;
-                case 2:
-                    mizgirRoad2.Controls.Add(mizgir.Picture, 0, 0);
-                    mizgirRoad2.Refresh();
-                    break;
-                case 3:
-                    mizgirRoad3.Controls.Add(mizgir.Picture, 0, 0);
-                    mizgirRoad3.Refresh();
-                    break;
-                case 4:
-                    mizgirRoad4.Controls.Add(mizgir.Picture, 0, 0);
-                    mizgirRoad4.Refresh();
-                    break;
+                GC.ResultStrings[i] = "";
+            }
+
+            btStart.Enabled = false;
+
+            foreach (Bug mizgir in GC.Mizgirs)
+            {
+                mizgir.IsWinner = false;
+                mizgir.Position = 0;
+                mizgir.Bets.Clear();
+
+                switch (mizgir.Number)
+                {
+                    case 1:
+                        mizgirRoad1.Controls.Add(mizgir.Picture, 0, 0);
+                        mizgirRoad1.Refresh();
+                        break;
+                    case 2:
+                        mizgirRoad2.Controls.Add(mizgir.Picture, 0, 0);
+                        mizgirRoad2.Refresh();
+                        break;
+                    case 3:
+                        mizgirRoad3.Controls.Add(mizgir.Picture, 0, 0);
+                        mizgirRoad3.Refresh();
+                        break;
+                    case 4:
+                        mizgirRoad4.Controls.Add(mizgir.Picture, 0, 0);
+                        mizgirRoad4.Refresh();
+                        break;
+
+                }
             }
         }
 
-        public void Move(Mizgir mizgir, int step)
+
+        public void Move(Bug mizgir, int step)
         {
             mizgir.Position += step;
             switch(mizgir.Number)
@@ -116,9 +148,9 @@ namespace MizgirTotalizator
 
         private void combGamer_SelectedIndexChanged(object sender, EventArgs e)
         {
-            lbCash.Text = Gamers[combGamer.SelectedIndex].Cash.ToString();
+            lbCash.Text = GC.Gamers[combGamer.SelectedIndex].Cash.ToString();
 
-            if (Gamers[combGamer.SelectedIndex].HasBet)
+            if (GC.Gamers[combGamer.SelectedIndex].HasBet)
             {
                 combMizgir.Enabled = false;
                 tbBetSize.Enabled = false;
@@ -131,6 +163,49 @@ namespace MizgirTotalizator
                 btPut.Enabled = true;
             }
         }
+
+
+        public void PutBet(int gamerNum, int mizgirNum, int bet)
+        {
+            Bet Bet = new Bet(GC.Gamers[gamerNum], bet);
+
+            GC.Mizgirs[mizgirNum].Bets.Add(Bet);
+
+            GC.Gamers[gamerNum].Cash -= bet;
+            lbCash.Text = GC.Gamers[gamerNum].Cash.ToString();
+            GC.Gamers[gamerNum].HasBet = true;
+
+            switch (GC.Gamers[gamerNum].Number)
+            {
+                case 1:
+                    label1.Text = "Участник1 поставил " + bet + " на Мизгирь" + (mizgirNum+1);
+                    break;
+                case 2:
+                    label2.Text = "Участник2 поставил " + bet + " на Мизгирь" + (mizgirNum + 1);
+                    break;
+                case 3:
+                    label3.Text = "Участник3 поставил " + bet + " на Мизгирь" + (mizgirNum + 1);
+                    break;
+            }
+
+
+            GC.betsCount++;
+            GC.sumBet += bet;
+            
+
+            if (GC.betsCount == GC.Gamers.Count)
+                btStart.Enabled = true;
+        }
+
+
+        public void GetBet(int gamerInd, int bet)
+        {
+            int win = (int)((double)bet / GC.winBet * GC.sumBet);
+            GC.Gamers[gamerInd].Cash += win+5;
+            GC.Gamers[gamerInd].HasBet = false;
+            GC.ResultStrings[gamerInd] = GC.Gamers[gamerInd].Name + " выиграл " + (win - bet) + "\n";
+        }
+
 
         private void btPut_Click(object sender, EventArgs e)
         {
@@ -147,7 +222,7 @@ namespace MizgirTotalizator
                     return;
                 }
 
-                if(bet > Gamers[combGamer.SelectedIndex].Cash)
+                if(bet > GC.Gamers[combGamer.SelectedIndex].Cash)
                 {
                     MessageBox.Show("Ошибка: у игрока недостаточно средств для такой ставки");
                     return;
@@ -159,33 +234,16 @@ namespace MizgirTotalizator
                 }
                 else
                 {
-                    Bet Bet = new Bet(Mizgirs[combMizgir.SelectedIndex], bet);
-                    Gamers[combGamer.SelectedIndex].Bet = Bet;
-                    Gamers[combGamer.SelectedIndex].Cash -= bet;
-                    lbCash.Text = Gamers[combGamer.SelectedIndex].Cash.ToString();
-                    Gamers[combGamer.SelectedIndex].HasBet = true;
-                    
-                    betsCount++;
+                    GC.Gamers[combGamer.SelectedIndex].putBet(combGamer.SelectedIndex, combMizgir.SelectedIndex, bet);
 
-                    switch(Gamers[combGamer.SelectedIndex].Number)
-                    {
-                        case 1:
-                            label1.Text = "Участник1 поставил " + bet + " на Мизгирь" + Mizgirs[combMizgir.SelectedIndex].Number;
-                            break;
-                        case 2:
-                            label2.Text = "Участник2 поставил " + bet + " на Мизгирь" + Mizgirs[combMizgir.SelectedIndex].Number;
-                            break;
-                        case 3:
-                            label3.Text = "Участник3 поставил " + bet + " на Мизгирь" + Mizgirs[combMizgir.SelectedIndex].Number;
-                            break;
-                    }
+                    
 
                     btPut.Enabled = false;
 
                     combMizgir.Enabled = false;
                     tbBetSize.Enabled = false;
 
-                    if (betsCount == 3)
+                    if (GC.betsCount == 3)
                         btStart.Enabled = true;
                 }
             }
@@ -195,7 +253,7 @@ namespace MizgirTotalizator
             }
         }
 
-        CritValues Max(List<double> Ratios)
+        public CritValues Max(List<double> Ratios)
         {
             CritValues max;
             max.CritValue = 0;
@@ -218,139 +276,22 @@ namespace MizgirTotalizator
             return max;
         }
 
+
+        public void ResultsPrint(string str)
+        {
+            rtbResults.Text = str + "\n" + rtbResults.Text;
+        }
+
+
         private void btStart_Click(object sender, EventArgs e)
         {
-            Random r = new Random();
-
-            List<int> Steps = new List<int>();
-            List<int> Remains = new List<int>();
-            List<double> Ratios = new List<double>();
-            for (int i = 0; i < 4; i++)
-            {
-                Steps.Add(new Int32());
-                Remains.Add(new Int32());
-                Ratios.Add(new Double());
-            }
-
-            IsRunning = true;
-
-            while(IsRunning)
-            {
-                for (int i = 0; i < 4; i++)
-                {
-                    Steps[i]= r.Next(5) + 1;
-                    Remains[i]= 24 - Mizgirs[i].Position;
-                    Ratios[i]= (double)Steps[i]/ Remains[i];
-                }
-
-                CritValues max = Max(Ratios);
-                CritValues min;
-                min.CritValue = 24;
-                min.CritVars = new List<int>();
-
-                while(max.CritValue > 0)
-                {
-                    foreach(int i in max.CritVars)
-                    {
-                        Mizgirs[i].move(Mizgirs[i], 1);
-                        Remains[i]--;
-                        Steps[i]--;
-                        Ratios[i] = (double)Steps[i] / Remains[i];
-                    }
-
-                    System.Threading.Thread.Sleep(500);
-
-                    foreach (int i in max.CritVars)
-                    {
-                        if (Remains[i] < min.CritValue)
-                        {
-                            min.CritValue = Remains[i];
-                            min.CritVars.Clear();
-                            min.CritVars.Add(i);
-                        }
-                        else if (Remains[i] == min.CritValue)
-                        {
-                            min.CritVars.Add(i);
-                        }
-                    }
-
-                    if(min.CritValue==0)
-                    {
-                        if(min.CritVars.Count==1)
-                        {
-                            MessageBox.Show("Победитель: Мизгирь" + Mizgirs[min.CritVars[0]].Number);
-                        }
-                        else
-                        {
-                            string winners = "Победители: Мизгирь" + Mizgirs[min.CritVars[0]].Number;
-                            for(int i=1; i< min.CritVars.Count; i++)
-                            {
-                                winners += ", Мизгирь" + Mizgirs[min.CritVars[i]].Number;
-                            }
-                            MessageBox.Show(winners);
-                        }
-
-                        foreach(int i in min.CritVars)
-                        {
-                            Mizgirs[i].IsWinner = true;
-                        }
-
-                        int sumBet=0, winBet=0;
-                        List<Gamer> Winners = new List<Gamer>();
-
-                        foreach (Gamer gamer in Gamers)
-                        {
-                            sumBet += gamer.Bet.Cost;
-                            if (gamer.Bet.Mizgir.IsWinner)
-                            {
-                                winBet += gamer.Bet.Cost;
-                                Winners.Add(gamer);
-                            }
-                        }
-
-                        string results = "";
-                        foreach (Gamer gamer in Gamers)
-                        {
-                            if (gamer.Bet.Mizgir.IsWinner)
-                            {
-                                int win= (int)(0.9 * gamer.Bet.Cost / winBet * sumBet);
-                                gamer.Cash += win;
-                                results += gamer.Name + " выиграл " + (win-gamer.Bet.Cost) + "\n";
-                            }
-                            else
-                            {
-                                results += gamer.Name + " проиграл " + gamer.Bet.Cost.ToString() + "\n";
-                            }
-
-                            gamer.Cash += 5;
-                            gamer.Bet = null;
-                            gamer.HasBet = false;
-                        }
-                        rtbResults.Text = results + "\n"+rtbResults.Text;
+            GC.StartRun();
 
 
-                        foreach (Mizgir mizgir in Mizgirs)
-                        {
-                            mizgir.IsWinner = false;
-                            mizgir.Position = 0;
-                            mizgir.toStart(mizgir);
-                        }
-
-                        label1.Text = "";
-                        label2.Text = "";
-                        label3.Text = "";
-
-                        betsCount = 0;
-                        btStart.Enabled = false;
-
-                        IsRunning = false;
-                        return;
-                    }
-
-                    max = Max(Ratios);
-                }
-
-            }
+            label1.Text = "";
+            label2.Text = "";
+            label3.Text = "";
+            btStart.Enabled = false;
         }
     }
 }

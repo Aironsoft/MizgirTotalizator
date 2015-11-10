@@ -6,15 +6,17 @@ using System.Threading.Tasks;
 
 namespace MizgirTotalizator
 {
-    class Bet
+    public class Bet
     {
-        public Mizgir Mizgir;
+        public Gambler Gamer;
         public int Cost;
 
-        public Bet(Mizgir mizgir, int cost)
+        public Bet(Gambler gamer, int cost)
         {
-            Mizgir = mizgir;
+            Gamer = gamer;
             Cost = cost;
         }
+
+
     }
 }
