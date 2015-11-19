@@ -38,8 +38,6 @@
             this.picbMizgir4 = new System.Windows.Forms.PictureBox();
             this.lb1 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
             this.btStart = new System.Windows.Forms.Button();
             this.combGamer = new System.Windows.Forms.ComboBox();
             this.combMizgir = new System.Windows.Forms.ComboBox();
@@ -47,6 +45,7 @@
             this.btPut = new System.Windows.Forms.Button();
             this.lbCash = new System.Windows.Forms.Label();
             this.rtbResults = new System.Windows.Forms.RichTextBox();
+            this.rtbBets = new System.Windows.Forms.RichTextBox();
             this.mizgirRoad1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picbMizgir1)).BeginInit();
             this.mizgirRoad2.SuspendLayout();
@@ -253,7 +252,7 @@
             // 
             this.lb1.AutoSize = true;
             this.lb1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.lb1.Location = new System.Drawing.Point(751, 245);
+            this.lb1.Location = new System.Drawing.Point(55, 253);
             this.lb1.Name = "lb1";
             this.lb1.Size = new System.Drawing.Size(64, 20);
             this.lb1.TabIndex = 5;
@@ -263,36 +262,16 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label1.Location = new System.Drawing.Point(700, 276);
+            this.label1.Location = new System.Drawing.Point(798, 253);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(111, 20);
+            this.label1.Size = new System.Drawing.Size(100, 20);
             this.label1.TabIndex = 6;
-            this.label1.Text = "Участник1 на";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label2.Location = new System.Drawing.Point(700, 306);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(111, 20);
-            this.label2.TabIndex = 7;
-            this.label2.Text = "Участник2 на";
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label3.Location = new System.Drawing.Point(700, 335);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(111, 20);
-            this.label3.TabIndex = 8;
-            this.label3.Text = "Участник3 на";
+            this.label1.Text = "Результаты";
             // 
             // btStart
             // 
             this.btStart.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.btStart.Location = new System.Drawing.Point(498, 335);
+            this.btStart.Location = new System.Drawing.Point(520, 329);
             this.btStart.Name = "btStart";
             this.btStart.Size = new System.Drawing.Size(117, 114);
             this.btStart.TabIndex = 9;
@@ -309,7 +288,7 @@
             "Участник1",
             "Участник2",
             "Участник3"});
-            this.combGamer.Location = new System.Drawing.Point(214, 298);
+            this.combGamer.Location = new System.Drawing.Point(294, 303);
             this.combGamer.Name = "combGamer";
             this.combGamer.Size = new System.Drawing.Size(109, 28);
             this.combGamer.TabIndex = 10;
@@ -325,7 +304,7 @@
             "Мизгирь2",
             "Мизгирь3",
             "Мизгирь4"});
-            this.combMizgir.Location = new System.Drawing.Point(214, 354);
+            this.combMizgir.Location = new System.Drawing.Point(294, 359);
             this.combMizgir.Name = "combMizgir";
             this.combMizgir.Size = new System.Drawing.Size(109, 28);
             this.combMizgir.TabIndex = 11;
@@ -333,7 +312,7 @@
             // tbBetSize
             // 
             this.tbBetSize.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.tbBetSize.Location = new System.Drawing.Point(218, 412);
+            this.tbBetSize.Location = new System.Drawing.Point(298, 417);
             this.tbBetSize.Name = "tbBetSize";
             this.tbBetSize.Size = new System.Drawing.Size(100, 26);
             this.tbBetSize.TabIndex = 12;
@@ -342,7 +321,7 @@
             // btPut
             // 
             this.btPut.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.btPut.Location = new System.Drawing.Point(218, 463);
+            this.btPut.Location = new System.Drawing.Point(298, 468);
             this.btPut.Name = "btPut";
             this.btPut.Size = new System.Drawing.Size(100, 27);
             this.btPut.TabIndex = 13;
@@ -354,7 +333,7 @@
             // 
             this.lbCash.AutoSize = true;
             this.lbCash.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.lbCash.Location = new System.Drawing.Point(329, 301);
+            this.lbCash.Location = new System.Drawing.Point(409, 306);
             this.lbCash.Name = "lbCash";
             this.lbCash.Size = new System.Drawing.Size(21, 20);
             this.lbCash.TabIndex = 14;
@@ -362,12 +341,23 @@
             // 
             // rtbResults
             // 
-            this.rtbResults.Location = new System.Drawing.Point(695, 368);
+            this.rtbResults.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.rtbResults.Location = new System.Drawing.Point(757, 276);
             this.rtbResults.Name = "rtbResults";
             this.rtbResults.ReadOnly = true;
-            this.rtbResults.Size = new System.Drawing.Size(292, 181);
+            this.rtbResults.Size = new System.Drawing.Size(292, 273);
             this.rtbResults.TabIndex = 15;
             this.rtbResults.Text = "";
+            // 
+            // rtbBets
+            // 
+            this.rtbBets.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.rtbBets.Location = new System.Drawing.Point(26, 276);
+            this.rtbBets.Name = "rtbBets";
+            this.rtbBets.ReadOnly = true;
+            this.rtbBets.Size = new System.Drawing.Size(252, 273);
+            this.rtbBets.TabIndex = 16;
+            this.rtbBets.Text = "";
             // 
             // Form
             // 
@@ -375,6 +365,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlDarkDark;
             this.ClientSize = new System.Drawing.Size(1071, 561);
+            this.Controls.Add(this.rtbBets);
             this.Controls.Add(this.rtbResults);
             this.Controls.Add(this.lbCash);
             this.Controls.Add(this.btPut);
@@ -382,8 +373,6 @@
             this.Controls.Add(this.combMizgir);
             this.Controls.Add(this.combGamer);
             this.Controls.Add(this.btStart);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.lb1);
             this.Controls.Add(this.mizgirRoad4);
@@ -415,8 +404,6 @@
         private System.Windows.Forms.TableLayoutPanel mizgirRoad4;
         private System.Windows.Forms.Label lb1;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button btStart;
         private System.Windows.Forms.ComboBox combGamer;
         private System.Windows.Forms.ComboBox combMizgir;
@@ -428,6 +415,7 @@
         private System.Windows.Forms.PictureBox picbMizgir4;
         private System.Windows.Forms.Label lbCash;
         private System.Windows.Forms.RichTextBox rtbResults;
+        private System.Windows.Forms.RichTextBox rtbBets;
     }
 }
 

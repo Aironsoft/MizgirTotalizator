@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
+using System.ComponentModel;
 using System.Windows.Forms;
 
 
@@ -14,22 +15,23 @@ namespace MizgirTotalizator
         public List<Gambler> Gamers;// игроков
         public List<Bug> Mizgirs;//список участников гонок
         public List<Bet> Bets;//список ставок
-        public int betsCount;
         public int sumBet;
         public int winBet;
         private Form Form;
-        public string[] ResultStrings;
+        public int[] Profits;
+
+        List<TableLayoutPanel> Roads;
 
 
-        public GameController(Form form)
+        public GameController(Form form, List<TableLayoutPanel> roads)
         {
             IsRunning = false;
             Gamers = new List<Gambler>();//список игроков
             Mizgirs = new List<Bug>();//список участников гонок
-            betsCount = 0;
             sumBet = 0;
             winBet = 0;
             Form = form;
+            Roads = roads;
         }
 
         public void Initialize()
@@ -54,7 +56,14 @@ namespace MizgirTotalizator
         }
 
 
-        public void StartRun()
+        public void Start()
+        {
+            Thread Thread =  new Thread(new ThreadStart(this.StartRun_DoWork));
+            Thread.Start();
+        }
+
+
+        private void StartRun_DoWork()// object sender, DoWorkEventArgs e
         {
 
             Random r = new Random();
@@ -89,7 +98,11 @@ namespace MizgirTotalizator
                 {
                     foreach (int i in max.CritVars)
                     {
-                        Mizgirs[i].move(Mizgirs[i], 1);
+                        object[] args = new object[] { Mizgirs[i], 1 };
+                        Form.Invoke(Form.DelegateMove, args);
+
+                        //Mizgirs[i].move(Mizgirs[i], 1);
+
                         Remains[i]--;
                         Steps[i]--;
                         Ratios[i] = (double)Steps[i] / Remains[i];
@@ -133,11 +146,11 @@ namespace MizgirTotalizator
                         }
 
 
-                        foreach(Bug mizgir in Mizgirs)
+                        foreach (Bug mizgir in Mizgirs)
                         {
-                            if(mizgir.IsWinner)
+                            if (mizgir.IsWinner)
                             {
-                                if(mizgir.Bets.Count!=0)//если на этого паука кто-то поставил
+                                if (mizgir.Bets.Count != 0)//если на этого паука кто-то поставил
                                 {
                                     foreach (Bet bet in mizgir.Bets)
                                     {
@@ -146,7 +159,7 @@ namespace MizgirTotalizator
 
                                     foreach (Bet bet in mizgir.Bets)
                                     {
-                                        bet.Gamer.getBet(bet.Gamer.Number-1, bet.Cost);
+                                        bet.Gamer.getBet(bet.Gamer.Number - 1, bet.Cost);
                                     }
                                 }
                             }
@@ -156,7 +169,7 @@ namespace MizgirTotalizator
                                 {
                                     foreach (Bet bet in mizgir.Bets)
                                     {
-                                        ResultStrings[bet.Gamer.Number-1]= bet.Gamer.Name + " проиграл " + bet.Cost + "\n";
+                                        //ResultStrings[bet.Gamer.Number-1]= bet.Gamer.Name + " проиграл " + bet.Cost + "\n";
                                         bet.Gamer.HasBet = false;
                                         bet.Gamer.Cash += 5;
                                     }
@@ -166,16 +179,20 @@ namespace MizgirTotalizator
 
 
                         string results = "";
-                        for (int n=0; n<ResultStrings.Length; n++)
+                        for (int n = 0; n < Profits.Length; n++)
                         {
-                            results += ResultStrings[n];
+                            if (Profits[n] >= 0)
+                                results += "Игрок" + (n + 1) + " выиграл " + Profits[n] + "\n";
+                            else
+                                results += "Игрок" + (n + 1) + " проиграл " + -Profits[n] + "\n";
                         }
-                        Form.ResultsPrint(results);
+                        object[] args = new object[] { results };
+                        Form.Invoke(Form.DelegatePrintResults, args);
+                        //Form.ResultsPrint(results);
 
+                        Form.Invoke(Form.DelegateToStart);
+                        //ToStart();
 
-                        ToStart();
-
-                        betsCount = 0;
                         sumBet = 0;
 
                         IsRunning = false;

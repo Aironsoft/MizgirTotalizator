@@ -26,14 +26,32 @@ namespace MizgirTotalizator
 
         GameController GC;//класс управления игрой
 
+        List<TableLayoutPanel> Roads;
+
+        public delegate void fMove(Bug mizgir, int step);
+        public fMove DelegateMove;
+        public delegate void fPrintResults(string s);
+        public fPrintResults DelegatePrintResults;
+        public delegate void fToStart();
+        public fToStart DelegateToStart;
+
 
         /// <summary>
         /// Функция, выполняемая при загрузке формы
         /// </summary>
         private void Form_Load(object sender, EventArgs e)
         {
-            GC = new GameController(this);
+            Roads = new List<TableLayoutPanel>();
+            Roads.Add(mizgirRoad1);
+            Roads.Add(mizgirRoad2);
+            Roads.Add(mizgirRoad3);
+            Roads.Add(mizgirRoad4);
+            GC = new GameController(this, Roads);
             GC.Initialize();
+
+            DelegateMove = new fMove(Move);
+            DelegatePrintResults = new fPrintResults(ResultsPrint);
+            DelegateToStart = new fToStart(ToStart);
         }
 
 
@@ -63,8 +81,8 @@ namespace MizgirTotalizator
                 GC.Mizgirs[i].move = Move;
             }
 
-            //сосданние массива строк результатов гонки
-            GC.ResultStrings = new string[GC.Gamers.Count];
+            //созданние массива прибыли от ставок
+            GC.Profits = new int[GC.Gamers.Count];
         }
 
 
@@ -74,23 +92,20 @@ namespace MizgirTotalizator
             lbCash.Text = "";
             combMizgir.SelectedIndex = 0;
             btStart.Enabled = false;
-            label1.Text = "";
-            label2.Text = "";
-            label3.Text = "";
         }
 
 
         public void ToStart()
         {
-            GC.betsCount = 0;
             GC.sumBet = 0;
             GC.winBet = 0;
             for(int i=0; i<GC.Gamers.Count; i++)
             {
-                GC.ResultStrings[i] = "";
+                GC.Profits[i] = 0;
             }
 
             btStart.Enabled = false;
+            rtbBets.Text = "";
 
             foreach (Bug mizgir in GC.Mizgirs)
             {
@@ -98,26 +113,8 @@ namespace MizgirTotalizator
                 mizgir.Position = 0;
                 mizgir.Bets.Clear();
 
-                switch (mizgir.Number)
-                {
-                    case 1:
-                        mizgirRoad1.Controls.Add(mizgir.Picture, 0, 0);
-                        mizgirRoad1.Refresh();
-                        break;
-                    case 2:
-                        mizgirRoad2.Controls.Add(mizgir.Picture, 0, 0);
-                        mizgirRoad2.Refresh();
-                        break;
-                    case 3:
-                        mizgirRoad3.Controls.Add(mizgir.Picture, 0, 0);
-                        mizgirRoad3.Refresh();
-                        break;
-                    case 4:
-                        mizgirRoad4.Controls.Add(mizgir.Picture, 0, 0);
-                        mizgirRoad4.Refresh();
-                        break;
-
-                }
+                Roads[mizgir.Number-1].Controls.Add(mizgir.Picture, 0, 0);
+                Roads[mizgir.Number - 1].Refresh();
             }
         }
 
@@ -125,26 +122,10 @@ namespace MizgirTotalizator
         public void Move(Bug mizgir, int step)
         {
             mizgir.Position += step;
-            switch(mizgir.Number)
-            {
-                case 1:
-                    mizgirRoad1.Controls.Add(mizgir.Picture, mizgir.Position, 0);
-                    mizgirRoad1.Refresh();
-                    break;
-                case 2:
-                    mizgirRoad2.Controls.Add(mizgir.Picture, mizgir.Position, 0);
-                    mizgirRoad2.Refresh();
-                    break;
-                case 3:
-                    mizgirRoad3.Controls.Add(mizgir.Picture, mizgir.Position, 0);
-                    mizgirRoad3.Refresh();
-                    break;
-                case 4:
-                    mizgirRoad4.Controls.Add(mizgir.Picture, mizgir.Position, 0);
-                    mizgirRoad4.Refresh();
-                    break;
-            }
+            Roads[mizgir.Number-1].Controls.Add(mizgir.Picture, mizgir.Position, 0);
+            Roads[mizgir.Number - 1].Refresh();
         }
+
 
         private void combGamer_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -174,27 +155,16 @@ namespace MizgirTotalizator
             GC.Gamers[gamerNum].Cash -= bet;
             lbCash.Text = GC.Gamers[gamerNum].Cash.ToString();
             GC.Gamers[gamerNum].HasBet = true;
+            GC.Profits[gamerNum] -= bet;
 
-            switch (GC.Gamers[gamerNum].Number)
-            {
-                case 1:
-                    label1.Text = "Участник1 поставил " + bet + " на Мизгирь" + (mizgirNum+1);
-                    break;
-                case 2:
-                    label2.Text = "Участник2 поставил " + bet + " на Мизгирь" + (mizgirNum + 1);
-                    break;
-                case 3:
-                    label3.Text = "Участник3 поставил " + bet + " на Мизгирь" + (mizgirNum + 1);
-                    break;
-            }
+            rtbBets.Text+= "Участник" + (gamerNum+1) + " поставил " + bet + " на Мизгирь" + (mizgirNum + 1)+"\n";
 
 
-            GC.betsCount++;
             GC.sumBet += bet;
             
 
-            if (GC.betsCount == GC.Gamers.Count)
-                btStart.Enabled = true;
+            //if (GC.Gamers[0].HasBet && GC.Gamers[1].HasBet && GC.Gamers[2].HasBet)
+            //    btStart.Enabled = true;
         }
 
 
@@ -203,7 +173,8 @@ namespace MizgirTotalizator
             int win = (int)((double)bet / GC.winBet * GC.sumBet);
             GC.Gamers[gamerInd].Cash += win+5;
             GC.Gamers[gamerInd].HasBet = false;
-            GC.ResultStrings[gamerInd] = GC.Gamers[gamerInd].Name + " выиграл " + (win - bet) + "\n";
+            GC.Profits[gamerInd] += win;
+            //GC.ResultStrings[gamerInd] = GC.Gamers[gamerInd].Name + " выиграл " + (win - bet) + "\n";
         }
 
 
@@ -236,14 +207,7 @@ namespace MizgirTotalizator
                 {
                     GC.Gamers[combGamer.SelectedIndex].putBet(combGamer.SelectedIndex, combMizgir.SelectedIndex, bet);
 
-                    
-
-                    btPut.Enabled = false;
-
-                    combMizgir.Enabled = false;
-                    tbBetSize.Enabled = false;
-
-                    if (GC.betsCount == 3)
+                    if (GC.Gamers[0].HasBet && GC.Gamers[1].HasBet && GC.Gamers[2].HasBet)
                         btStart.Enabled = true;
                 }
             }
@@ -285,12 +249,9 @@ namespace MizgirTotalizator
 
         private void btStart_Click(object sender, EventArgs e)
         {
-            GC.StartRun();
+            //GC.StartRun();
+            GC.Start();
 
-
-            label1.Text = "";
-            label2.Text = "";
-            label3.Text = "";
             btStart.Enabled = false;
         }
     }
