@@ -262,7 +262,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label1.Location = new System.Drawing.Point(798, 253);
+            this.label1.Location = new System.Drawing.Point(782, 253);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(100, 20);
             this.label1.TabIndex = 6;
@@ -341,16 +341,18 @@
             // 
             // rtbResults
             // 
+            this.rtbResults.Enabled = false;
             this.rtbResults.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.rtbResults.Location = new System.Drawing.Point(757, 276);
+            this.rtbResults.Location = new System.Drawing.Point(730, 276);
             this.rtbResults.Name = "rtbResults";
             this.rtbResults.ReadOnly = true;
-            this.rtbResults.Size = new System.Drawing.Size(292, 273);
+            this.rtbResults.Size = new System.Drawing.Size(319, 273);
             this.rtbResults.TabIndex = 15;
             this.rtbResults.Text = "";
             // 
             // rtbBets
             // 
+            this.rtbBets.Enabled = false;
             this.rtbBets.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.rtbBets.Location = new System.Drawing.Point(26, 276);
             this.rtbBets.Name = "rtbBets";

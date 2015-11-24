@@ -81,8 +81,12 @@ namespace MizgirTotalizator
                 GC.Mizgirs[i].move = Move;
             }
 
+            //создание массива суммарной ставки каждого игрока
+            GC.SumBets = new int[GC.Gamers.Count];
             //созданние массива прибыли от ставок
             GC.Profits = new int[GC.Gamers.Count];
+
+            GC.gameNumer = 0;
         }
 
 
@@ -99,12 +103,15 @@ namespace MizgirTotalizator
         {
             GC.sumBet = 0;
             GC.winBet = 0;
+            GC.gameNumer++;
             for(int i=0; i<GC.Gamers.Count; i++)
             {
                 GC.Profits[i] = 0;
             }
 
-            btStart.Enabled = false;
+            combGamer.Enabled = true;
+            combMizgir.Enabled = true;
+            tbBetSize.Enabled = true;
             rtbBets.Text = "";
 
             foreach (Bug mizgir in GC.Mizgirs)
@@ -131,18 +138,31 @@ namespace MizgirTotalizator
         {
             lbCash.Text = GC.Gamers[combGamer.SelectedIndex].Cash.ToString();
 
-            if (GC.Gamers[combGamer.SelectedIndex].HasBet)
-            {
-                combMizgir.Enabled = false;
-                tbBetSize.Enabled = false;
-                btPut.Enabled = false;
-            }
-            else
+            if(GC.Gamers[combGamer.SelectedIndex].Cash>0)//если у игрока есть деньги
             {
                 combMizgir.Enabled = true;
                 tbBetSize.Enabled = true;
                 btPut.Enabled = true;
             }
+            else
+            {
+                combMizgir.Enabled = false;
+                tbBetSize.Enabled = false;
+                btPut.Enabled = false;
+            }
+
+            //if (GC.Gamers[combGamer.SelectedIndex].HasBet)
+            //{
+            //    combMizgir.Enabled = false;
+            //    tbBetSize.Enabled = false;
+            //    btPut.Enabled = false;
+            //}
+            //else
+            //{
+            //    combMizgir.Enabled = true;
+            //    tbBetSize.Enabled = true;
+            //    btPut.Enabled = true;
+            //}
         }
 
 
@@ -155,16 +175,12 @@ namespace MizgirTotalizator
             GC.Gamers[gamerNum].Cash -= bet;
             lbCash.Text = GC.Gamers[gamerNum].Cash.ToString();
             GC.Gamers[gamerNum].HasBet = true;
-            GC.Profits[gamerNum] -= bet;
+            GC.SumBets[gamerNum] += bet;
 
             rtbBets.Text+= "Участник" + (gamerNum+1) + " поставил " + bet + " на Мизгирь" + (mizgirNum + 1)+"\n";
 
 
             GC.sumBet += bet;
-            
-
-            //if (GC.Gamers[0].HasBet && GC.Gamers[1].HasBet && GC.Gamers[2].HasBet)
-            //    btStart.Enabled = true;
         }
 
 
@@ -174,7 +190,6 @@ namespace MizgirTotalizator
             GC.Gamers[gamerInd].Cash += win+5;
             GC.Gamers[gamerInd].HasBet = false;
             GC.Profits[gamerInd] += win;
-            //GC.ResultStrings[gamerInd] = GC.Gamers[gamerInd].Name + " выиграл " + (win - bet) + "\n";
         }
 
 
@@ -249,7 +264,12 @@ namespace MizgirTotalizator
 
         private void btStart_Click(object sender, EventArgs e)
         {
-            //GC.StartRun();
+            combGamer.Enabled = false;
+            combMizgir.Enabled = false;
+            tbBetSize.Enabled = false;
+            btPut.Enabled = false;
+            btStart.Enabled = false;
+
             GC.Start();
 
             btStart.Enabled = false;

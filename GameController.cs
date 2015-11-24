@@ -18,7 +18,9 @@ namespace MizgirTotalizator
         public int sumBet;
         public int winBet;
         private Form Form;
+        public int[] SumBets;
         public int[] Profits;
+        public int gameNumer;//номер игры
 
         List<TableLayoutPanel> Roads;
 
@@ -101,8 +103,6 @@ namespace MizgirTotalizator
                         object[] args = new object[] { Mizgirs[i], 1 };
                         Form.Invoke(Form.DelegateMove, args);
 
-                        //Mizgirs[i].move(Mizgirs[i], 1);
-
                         Remains[i]--;
                         Steps[i]--;
                         Ratios[i] = (double)Steps[i] / Remains[i];
@@ -169,7 +169,6 @@ namespace MizgirTotalizator
                                 {
                                     foreach (Bet bet in mizgir.Bets)
                                     {
-                                        //ResultStrings[bet.Gamer.Number-1]= bet.Gamer.Name + " проиграл " + bet.Cost + "\n";
                                         bet.Gamer.HasBet = false;
                                         bet.Gamer.Cash += 5;
                                     }
@@ -178,20 +177,15 @@ namespace MizgirTotalizator
                         }
 
 
-                        string results = "";
+                        string results = "\tИгра "+gameNumer+"\n";
                         for (int n = 0; n < Profits.Length; n++)
                         {
-                            if (Profits[n] >= 0)
-                                results += "Игрок" + (n + 1) + " выиграл " + Profits[n] + "\n";
-                            else
-                                results += "Игрок" + (n + 1) + " проиграл " + -Profits[n] + "\n";
+                            results += "Игрок" + (n + 1) + " выиграл " + Profits[n] + " с суммарной ставкой " + SumBets[n] + "\n";
                         }
                         object[] args = new object[] { results };
                         Form.Invoke(Form.DelegatePrintResults, args);
-                        //Form.ResultsPrint(results);
 
                         Form.Invoke(Form.DelegateToStart);
-                        //ToStart();
 
                         sumBet = 0;
 
